@@ -1,0 +1,176 @@
+{
+  "classes": [
+    {
+      "name": "TransactionHistory",
+      "responsibilities": [
+        "Store records of account transactions",
+        "Provide transaction logging for deposits and withdrawals"
+      ],
+      "attributes": [
+        {
+          "name": "records",
+          "type": "list",
+          "visibility": "private",
+          "description": "Holds all transaction records for auditing and tracking"
+        }
+      ],
+      "methods": [
+        {
+          "name": "record_deposit",
+          "params": [
+            { "name": "account_id", "type": "str" },
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "bool",
+          "visibility": "public",
+          "responsibilities": "Record a deposit transaction for an account"
+        },
+        {
+          "name": "record_withdraw",
+          "params": [
+            { "name": "account_id", "type": "str" },
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "bool",
+          "visibility": "public",
+          "responsibilities": "Record a withdrawal transaction if the amount is valid"
+        }
+      ]
+    },
+    {
+      "name": "FeePolicy",
+      "responsibilities": [
+        "Calculate fees applied to withdrawals"
+      ],
+      "methods": [
+        {
+          "name": "calculate_fee",
+          "params": [
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "int",
+          "visibility": "public",
+          "responsibilities": "Determine the withdrawal fee based on amount"
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "responsibilities": [
+        "Maintain account balance",
+        "Handle deposits and withdrawals",
+        "Coordinate fee calculation and transaction recording"
+      ],
+      "attributes": [
+        {
+          "name": "account_id",
+          "type": "str",
+          "visibility": "public",
+          "description": "Unique identifier for the account"
+        },
+        {
+          "name": "balance",
+          "type": "int",
+          "visibility": "private",
+          "description": "Current balance of the account"
+        },
+        {
+          "name": "fee_policy",
+          "type": "FeePolicy",
+          "visibility": "private",
+          "description": "Policy object used to calculate withdrawal fees"
+        },
+        {
+          "name": "history",
+          "type": "TransactionHistory",
+          "visibility": "private",
+          "description": "Transaction history associated with this account"
+        }
+      ],
+      "methods": [
+        {
+          "name": "deposit",
+          "params": [
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "bool",
+          "visibility": "public",
+          "responsibilities": "Increase balance and record a deposit transaction"
+        },
+        {
+          "name": "withdraw",
+          "params": [
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "bool",
+          "visibility": "public",
+          "responsibilities": "Withdraw money after applying fees and record the transaction"
+        }
+      ]
+    },
+    {
+      "name": "BankService",
+      "responsibilities": [
+        "Manage bank accounts",
+        "Provide a facade for external operations"
+      ],
+      "attributes": [
+        {
+          "name": "accounts",
+          "type": "dict[str, Account]",
+          "visibility": "private",
+          "description": "Registry of all bank accounts managed by the service"
+        }
+      ],
+      "methods": [
+        {
+          "name": "create_account",
+          "params": [
+            { "name": "account_id", "type": "str" },
+            { "name": "initial_balance", "type": "int" }
+          ],
+          "return_type": "None",
+          "visibility": "public",
+          "responsibilities": "Create and register a new account"
+        },
+        {
+          "name": "deposit",
+          "params": [
+            { "name": "account_id", "type": "str" },
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "bool",
+          "visibility": "public",
+          "responsibilities": "Deposit money into a specific account"
+        },
+        {
+          "name": "withdraw",
+          "params": [
+            { "name": "account_id", "type": "str" },
+            { "name": "amount", "type": "int" }
+          ],
+          "return_type": "bool",
+          "visibility": "public",
+          "responsibilities": "Withdraw money from a specific account"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "Account",
+      "to": "FeePolicy",
+      "type": "composition"
+    },
+    {
+      "from": "Account",
+      "to": "TransactionHistory",
+      "type": "composition"
+    },
+    {
+      "from": "BankService",
+      "to": "Account",
+      "type": "aggregation"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blueprintir.dev/schemas/ir-schema.json",
+  "title": "BlueprintIR Schema",
+  "description": "Intermediate Representation for AI-driven project structure understanding and maintenance",
+  "type": "object",
+  "required": ["classes"],
+  "properties": {
+    "classes": {
+      "type": "array",
+      "description": "All classes in the project",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/Class"
+      }
+    },
+    "functions": {
+      "type": "array",
+      "description": "Top-level or module-level functions",
+      "items": {
+        "$ref": "#/$defs/Function"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Explicit relationships between classes",
+      "items": {
+        "$ref": "#/$defs/Relationship"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "Class": {
+      "type": "object",
+      "required": ["name", "responsibilities"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Class name"
+        },
+        "responsibilities": {
+          "type": "array",
+          "description": "High-level responsibilities of this class",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "attributes": {
+          "type": "array",
+          "description": "Class attributes/fields",
+          "items": {
+            "$ref": "#/$defs/Attribute"
+          }
+        },
+        "methods": {
+          "type": "array",
+          "description": "Methods defined in this class",
+          "items": {
+            "$ref": "#/$defs/Method"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Attribute": {
+      "type": "object",
+      "required": ["name", "type", "visibility"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Attribute name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type name"
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Access modifier",
+          "enum": ["public", "private", "protected"]
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional explanation of why this attribute matters in the design"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Method": {
+      "type": "object",
+      "required": ["name", "params", "return_type", "visibility"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Method name"
+        },
+        "params": {
+          "type": "array",
+          "description": "Method parameters",
+          "items": {
+            "$ref": "#/$defs/Parameter"
+          }
+        },
+        "return_type": {
+          "type": "string",
+          "description": "Return type name"
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Access modifier",
+          "enum": ["public", "private", "protected"]
+        },
+        "responsibilities": {
+          "type": "string",
+          "description": "One-sentence description of method purpose"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Parameter": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Parameter name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type name"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Function": {
+      "type": "object",
+      "required": ["name", "params", "return_type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Function name"
+        },
+        "params": {
+          "type": "array",
+          "description": "Function parameters",
+          "items": {
+            "$ref": "#/$defs/Parameter"
+          }
+        },
+        "return_type": {
+          "type": "string",
+          "description": "Return type name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Purpose of this top-level or module-level function"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Relationship": {
+      "type": "object",
+      "required": ["from", "to", "type"],
+      "properties": {
+        "from": {
+          "type": "string",
+          "description": "Source class name"
+        },
+        "to": {
+          "type": "string",
+          "description": "Target class name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of relationship",
+          "enum": ["dependency", "inheritance", "composition", "aggregation"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
